@@ -1,0 +1,60 @@
+﻿@page "/"
+@inject NavigationManager Navigation
+
+<PageTitle>Home</PageTitle>
+
+<h1>404 test page</h1>
+<p>
+    Click on this button to navigate on a web page which does not exist.
+    <br />
+    In the program.cs for the blazor server project, a specific page for 404 error has been specified.
+    <br />
+    <a href="@Navigation.BaseUri/doesnotexist" class="btn btn-warning">Navigate to page not referenced</a>
+</p>
+
+@if (hub.IsConnected)
+{
+    <p>
+        <button class="btn btn-primary" @onclick="ReceiveRandomMessage">Random message from hub</button>
+    </p>
+}
+
+<div style="border: 1px solid gray; border-radius: 5px; padding: 10px">
+
+    <p>
+        Connection status : <b>@hub.IsConnected</b>
+    </p>
+
+    <strong>Hub messages</strong>
+    <hr />
+    @foreach (var item in hub.Messages)
+    {
+        <p>
+            - @item;
+        </p>
+    }
+</div>
+
+@code{
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            hub.InitHub();
+            if (hub.hubConnection != null)
+                await hub.ConnectAsync();
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task ReceiveRandomMessage()
+    {
+        await hub.ReceiveRandomMessage();
+        await InvokeAsync(StateHasChanged);
+    }
+}

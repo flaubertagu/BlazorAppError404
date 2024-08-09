@@ -1,0 +1,22 @@
+﻿@page "/404"
+@inject NavigationManager Navigation
+@inject SignalRHub hub
+
+<h3>Page not found</h3>
+
+<p>Hub connection stored status - <b>@hub.IsConnected</b></p>
+
+<button class="btn btn-primary" @onclick="HomePageSimpleNav">Return to home page</button>
+
+@code {
+    private void HomePageSimpleNav()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        StateHasChanged();
+        return base.OnInitializedAsync();
+    }
+}
